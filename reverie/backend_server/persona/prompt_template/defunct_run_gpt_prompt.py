@@ -7,6 +7,8 @@ interface with the safe_generate_response function.
 
 Note (March 10, 2023) -- Defunct
 """
+
+# 这段代码定义了多种与GPT-3交互的函数，主要用于生成对话、计划、总结和其他认知任务。这些函数封装了与GPT模型的交互，生成各种类型的文本输出，如角色对话、日程规划、关系总结等。
 import re
 import datetime
 import sys
@@ -16,7 +18,8 @@ from global_methods import *
 from persona.prompt_template.gpt_structure import *
 from persona.prompt_template.print_prompt import *
 
-
+# 生成一个长度为i到j之间的随机字母数字字符串。
+# 这些函数通过GPT模型生成不同的对话、计划和角色行为相关的文本输出。
 def get_random_alphanumeric(i=6, j=6): 
   """
   Returns a random alpha numeric strength that has the length of somewhere
@@ -37,6 +40,7 @@ def get_random_alphanumeric(i=6, j=6):
 # CHAPTER 1: Run GPT Prompt
 ##############################################################################
 
+# 根据角色信息生成角色的起床时间。
 def run_gpt_prompt_wake_up_hour(persona, test_input=None, verbose=False): 
   """
   Given the persona, returns an integer that indicates the hour when the 
@@ -84,7 +88,7 @@ def run_gpt_prompt_wake_up_hour(persona, test_input=None, verbose=False):
     
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
-
+# 生成角色的一系列的每日计划，包括起床时间、活动安排等。
 def run_gpt_prompt_daily_plan(persona, 
                               wake_up_hour, 
                               test_input=None, 
@@ -156,7 +160,7 @@ def run_gpt_prompt_daily_plan(persona,
     
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
-
+# 根据角色的日常需求生成小时级别的时间表
 def run_gpt_prompt_generate_hourly_schedule(persona, 
                                             curr_hour_str,
                                             p_f_ds_hourly_org, 
@@ -258,7 +262,7 @@ def run_gpt_prompt_generate_hourly_schedule(persona,
 
 
 
-
+# 将任务分解为多个子任务，并生成执行时间。
 def run_gpt_prompt_task_decomp(persona, 
                                task, 
                                duration, 
@@ -454,7 +458,7 @@ def run_gpt_prompt_task_decomp(persona,
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+ # 根据动作描述生成行动位置和对象。
 def run_gpt_prompt_action_sector(action_description, 
                                 persona, 
                                 maze, 
@@ -679,7 +683,7 @@ def run_gpt_prompt_action_game_object(action_description,
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+# 生成角色的发音或简短表情符号。
 def run_gpt_prompt_pronunciatio(action_description, persona, verbose=False): 
   def create_prompt_input(action_description): 
     if "(" in action_description: 
