@@ -18,6 +18,7 @@ from persona.memory_structures.scratch import *
 from persona.cognitive_modules.retrieve import *
 from persona.prompt_template.run_gpt_prompt import *
 
+# 该函数生成与目标角色对话时的核心想法摘要。它从 retrieved 对象中提取所有的 embedding_key（嵌入密钥）并组合为一个字符串，传递给 GPT 模型来生成总结性对话内容。
 def generate_agent_chat_summarize_ideas(init_persona, 
                                         target_persona, 
                                         retrieved, 
@@ -39,6 +40,7 @@ def generate_agent_chat_summarize_ideas(init_persona,
   return summarized_idea
 
 
+# 这个函数总结了角色之间的关系，基于其嵌入的记忆数据（通过 retrieved 对象中的 embedding_key）生成一个简短的描述，用于对话上下文的构建。
 def generate_summarize_agent_relationship(init_persona, 
                                           target_persona, 
                                           retrieved): 
@@ -56,6 +58,7 @@ def generate_summarize_agent_relationship(init_persona,
   return summarized_relationship
 
 
+# 这个函数用来生成角色之间的实际对话。它基于初始角色（init_persona）和目标角色（target_persona）的想法摘要以及当前的情境（curr_context），生成最终对话文本。
 def generate_agent_chat(maze, 
                         init_persona, 
                         target_persona,
@@ -73,6 +76,7 @@ def generate_agent_chat(maze,
   return summarized_idea
 
 
+# 是一个简化的版本，用于优化对话生成速度。该函数通过从记忆中检索数据和生成关系总结，构建初始和目标角色的对话，并返回生成的对话内容。
 def agent_chat_v1(maze, init_persona, target_persona): 
   # Chat version optimized for speed via batch generation
   curr_context = (f"{init_persona.scratch.name} " + 
@@ -123,6 +127,10 @@ def generate_one_utterance(maze, init_persona, target_persona, retrieved, curr_c
 
   return x["utterance"], x["end"]
 
+
+
+# 是一个复杂版本的对话生成函数，它逐句生成对话。在每轮生成中，它从记忆中检索与目标角色相关的内容，
+# 生成当前句子，并将其加入对话历史。该函数迭代生成多轮对话，直到达到预设的句子数或对话结束。
 def agent_chat_v2(maze, init_persona, target_persona): 
   curr_chat = []
   print ("July 23")
@@ -182,7 +190,7 @@ def agent_chat_v2(maze, init_persona, target_persona):
 
 
 
-
+# 总结角色与某些节点（如某些记忆片段）之间的关系，基于嵌入密钥生成简要的总结。
 def generate_summarize_ideas(persona, nodes, question): 
   statements = ""
   for n in nodes:
@@ -191,6 +199,7 @@ def generate_summarize_ideas(persona, nodes, question):
   return summarized_idea
 
 
+# 用于在现有对话的基础上生成下一句对话。它结合对话历史和总结的想法，生成新的对话行。
 def generate_next_line(persona, interlocutor_desc, curr_convo, summarized_idea):
   # Original chat -- line by line generation 
   prev_convo = ""
@@ -203,10 +212,11 @@ def generate_next_line(persona, interlocutor_desc, curr_convo, summarized_idea):
                                                       summarized_idea)[0]  
   return next_line
 
-
+# 生成角色的内心独白，通常用于 "whisper" 模式下的对话。
 def generate_inner_thought(persona, whisper):
   inner_thought = run_gpt_prompt_generate_whisper_inner_thought(persona, whisper)[0]
   return inner_thought
+
 
 def generate_action_event_triple(act_desp, persona): 
   """TODO 
@@ -222,7 +232,7 @@ def generate_action_event_triple(act_desp, persona):
   if debug: print ("GNS FUNCTION: <generate_action_event_triple>")
   return run_gpt_prompt_event_triple(act_desp, persona)[0]
 
-
+ # 为当前事件生成一个评分（Poignancy Score），根据对话、想法或事件的描述，评估其影响力或重要性
 def generate_poig_score(persona, event_type, description): 
   if debug: print ("GNS FUNCTION: <generate_poig_score>")
 
@@ -235,7 +245,7 @@ def generate_poig_score(persona, event_type, description):
     return run_gpt_prompt_chat_poignancy(persona, 
                            persona.scratch.act_description)[0]
 
-
+# 加载历史事件，为角色的记忆添加内心想法和关联事件。
 def load_history_via_whisper(personas, whispers):
   for count, row in enumerate(whispers): 
     persona = personas[row[0]]
@@ -253,7 +263,8 @@ def load_history_via_whisper(personas, whispers):
                               thought, keywords, thought_poignancy, 
                               thought_embedding_pair, None)
 
-
+# 该函数开启了一个对话会话，根据指定的模式（"analysis" 或 "whisper"）进行对话交互。在分析模式下，用户输入问题，并基于GPT生成的回答与角色进行对话。
+# 在低语模式下，生成角色的内心想法并将其添加到记忆中。
 def open_convo_session(persona, convo_mode): 
   if convo_mode == "analysis": 
     curr_convo = []
