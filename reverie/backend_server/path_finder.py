@@ -5,6 +5,10 @@ File: path_finder.py
 Description: Implements various path finding functions for generative agents.
 Some of the functions are defunct. 
 """
+
+"""
+这段代码定义了一组用于在二维迷宫中找到路径的函数。通过迷宫、起点和终点坐标，函数可以生成从起点到终点的路径，避开障碍。
+"""
 import numpy as np
 
 def print_maze(maze):
@@ -14,6 +18,9 @@ def print_maze(maze):
     print()
 
 
+
+
+# 这是一个路径查找器，基于深度优先搜索算法，沿着迷宫找到从 start 到 end 的路径。
 def path_finder_v1(maze, start, end, collision_block_char, verbose=False): 
   def prepare_maze(maze, start, end):
     maze[start[0]][start[1]] = "S"
@@ -93,6 +100,7 @@ def path_finder_v1(maze, start, end, collision_block_char, verbose=False):
   return path
 
 
+#  使用广度优先搜索算法（基于步数的迷宫扩展法）查找路径，逐步将路径向外扩展，直至找到终点。
 def path_finder_v2(a, start, end, collision_block_char, verbose=False):
   def make_step(m, k):
     for i in range(len(m)):
@@ -177,6 +185,8 @@ def path_finder(maze, start, end, collision_block_char, verbose=False):
   return path
 
 
+
+#  找到距离当前坐标最近的坐标。
 def closest_coordinate(curr_coordinate, target_coordinates): 
   min_dist = None
   closest_coordinate = None
@@ -195,6 +205,8 @@ def closest_coordinate(curr_coordinate, target_coordinates):
   return closest_coordinate
 
 
+
+# 找到目标周围的最接近当前起点的坐标（目标坐标周围的上、下、左、右四个坐标），然后从起点到达最近的目标坐标。
 def path_finder_2(maze, start, end, collision_block_char, verbose=False):
   # start => persona_a
   # end => persona_b
@@ -220,6 +232,7 @@ def path_finder_2(maze, start, end, collision_block_char, verbose=False):
   return path
 
 
+# 找到起点到终点的路径，将路径分为两部分，并返回两段路径。
 def path_finder_3(maze, start, end, collision_block_char, verbose=False):
   # start => persona_a
   # end => persona_b
