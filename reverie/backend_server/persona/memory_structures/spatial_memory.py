@@ -12,6 +12,9 @@ sys.path.append('../../')
 from utils import *
 from global_methods import *
 
+
+# 这段代码定义了一个 MemoryTree 类，用于处理和管理一个游戏世界中的空间记忆。MemoryTree 类主要用于存储和访问游戏世界中的不同区域、
+# 场景和对象的结构信息。具体功能包括加载、打印、保存和查询记忆树中的数据。
 class MemoryTree: 
   def __init__(self, f_saved): 
     self.tree = {}
@@ -40,7 +43,7 @@ class MemoryTree:
       json.dump(self.tree, outfile) 
 
 
-
+  # 返回当前世界中所有可访问的领域（sector）的名称，以逗号分隔的字符串形式。
   def get_str_accessible_sectors(self, curr_world): 
     """
     Returns a summary string of all the arenas that the persona can access 
@@ -59,7 +62,7 @@ class MemoryTree:
     x = ", ".join(list(self.tree[curr_world].keys()))
     return x
 
-
+ # 返回当前领域中所有可访问的场景（arena）的名称，以逗号分隔的字符串形式。
   def get_str_accessible_sector_arenas(self, sector): 
     """
     Returns a summary string of all the arenas that the persona can access 
@@ -81,7 +84,7 @@ class MemoryTree:
     x = ", ".join(list(self.tree[curr_world][curr_sector].keys()))
     return x
 
-
+# 返回当前场景中所有可访问的游戏对象的名称，以逗号分隔的字符串形式。
   def get_str_accessible_arena_game_objects(self, arena):
     """
     Get a str list of all accessible game objects that are in the arena. If 
