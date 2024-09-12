@@ -11,15 +11,21 @@ sys.path.append('../../')
 
 from global_methods import *
 
+
+# 这段代码定义了一个名为Scratch的类，它实现了生成式代理（generative agents）的短期记忆模块。
+# Scratch 类负责存储代理的实时状态，包括代理在虚拟世界中的位置、行动计划、当前行动状态、与其他代理的对话等。这类数据都是短期或临时的，因此随着时间推进会被更新和替换
 class Scratch: 
   def __init__(self, f_saved): 
     # PERSONA HYPERPARAMETERS
     # <vision_r> denotes the number of tiles that the persona can see around 
     # them. 
+    # 感知半径，表示代理可以看到的范围（例如，4个格子远）。
     self.vision_r = 4
     # <att_bandwidth> TODO 
+    # 注意力带宽，表示代理在同一时刻可以处理的事件数量。
     self.att_bandwidth = 3
     # <retention> TODO 
+    # 记忆保持的事件数量，表示代理能记住多少事件而不会重复感知。
     self.retention = 5
 
     # WORLD INFORMATION
@@ -29,7 +35,10 @@ class Scratch:
     self.curr_tile = None
     # Perceived world daily requirement. 
     self.daily_plan_req = None
-    
+
+
+    # 代理的姓名、年龄、特质、生活方式等（例如name, age, innate, learned, lifestyle）。
+    # 这些信息描述了代理的基本身份和生活状态。
     # THE CORE IDENTITY OF THE PERSONA 
     # Base information about the persona.
     self.name = None
@@ -73,6 +82,9 @@ class Scratch:
     #        'Go to bed early']
     # They have to be renewed at the end of the day, which is why we are
     # keeping track of when they were first generated. 
+
+    
+    # 代理当天的目标列表。例如“做午餐”、“完成绘画”等。
     self.daily_req = []
     # <f_daily_schedule> denotes a form of long term planning. This lays out 
     # the persona's daily plan. 
@@ -94,6 +106,9 @@ class Scratch:
     #         ...
     #         ['having lunch', 60], 
     #         ['working on her painting', 180], ...]
+
+
+    # 代理的日常计划，包括代理在每个小时内计划的活动和相应的持续时间。
     self.f_daily_schedule = []
     # <f_daily_schedule_hourly_org> is a replica of f_daily_schedule
     # initially, but retains the original non-decomposed version of the hourly
@@ -110,6 +125,9 @@ class Scratch:
     # access this without doing negative indexing (e.g., [-1]) because the 
     # latter address elements may not be present in some cases. 
     # e.g., "dolores double studio:double studio:bedroom 1:bed"
+
+    
+    # 当前行动的执行地点。
     self.act_address = None
     # <start_time> is a python datetime instance that indicates when the 
     # action has started. 
@@ -124,6 +142,8 @@ class Scratch:
     self.act_pronunciatio = None
     # <event_form> represents the event triple that the persona is currently 
     # engaged in. 
+
+    # 表示当前行动的事件形式，通常为三元组(subject, predicate, object)。
     self.act_event = (self.name, None, None)
 
     # <obj_description> is a string description of the object action. 
@@ -137,10 +157,16 @@ class Scratch:
 
     # <chatting_with> is the string name of the persona that the current 
     # persona is chatting with. None if it does not exist. 
+
+
+    # 当前代理正在对话的对象名称
     self.chatting_with = None
     # <chat> is a list of list that saves a conversation between two personas.
     # It comes in the form of: [["Dolores Murphy", "Hi"], 
     #                           ["Maeve Jenson", "Hi"] ...]
+
+
+    # 存储与其他代理的对话内容。
     self.chat = None
     # <chatting_with_buffer>  
     # e.g., ["Dolores Murphy"] = self.vision_r
@@ -191,6 +217,8 @@ class Scratch:
       self.kw_strg_event_reflect_th = scratch_load["kw_strg_event_reflect_th"]
       self.kw_strg_thought_reflect_th = scratch_load["kw_strg_thought_reflect_th"]
 
+
+      # 这些是代理在记忆反思时使用的加权参数，用来决定某些事件的重要性、相关性和新颖性。
       self.recency_w = scratch_load["recency_w"]
       self.relevance_w = scratch_load["relevance_w"]
       self.importance_w = scratch_load["importance_w"]
@@ -309,7 +337,7 @@ class Scratch:
     with open(out_json, "w") as outfile:
       json.dump(scratch, outfile, indent=2) 
 
-
+# 计算并返回代理当前计划的执行位置，这有助于在日常计划中找到当前代理正在执行或将要执行的任务。
   def get_f_daily_schedule_index(self, advance=0):
     """
     We get the current index of self.f_daily_schedule. 
@@ -379,6 +407,9 @@ class Scratch:
     return curr_index
 
 
+
+  # 返回代理的身份稳定集（Identity Stable Set，简称ISS），该集合总结了代理的核心特征，
+  # 包括姓名、年龄、天赋、学习到的特质、当前的生活状态和生活方式。
   def get_str_iss(self): 
     """
     ISS stands for "identity stable set." This describes the commonset summary
