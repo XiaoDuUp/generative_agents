@@ -18,6 +18,13 @@ term "personas" to refer to generative agents, "associative memory" to refer
 to the memory stream, and "reverie" to refer to the overarching simulation 
 framework.
 """
+
+
+"""
+这段代码实现了一个名为 ReverieServer 的类，它用于模拟生成性智能体（Generative Agents）的行为，
+并通过“Reverie”系统运行仿真。Reverie 是一个用于创建交互式人类行为模拟的框架，允许通过命令行控制仿真进程。
+核心功能是管理智能体（称为“personas”）的行为、位置、时间流逝、路径规划、对话等。
+"""
 import json
 import numpy
 import datetime
@@ -39,6 +46,7 @@ from persona.persona import *
 #                                  REVERIE                                   #
 ##############################################################################
 
+# 初始化 ReverieServer 类并加载仿真数据，设置智能体的初始状态。
 class ReverieServer: 
   def __init__(self, 
                fork_sim_code,
@@ -187,6 +195,9 @@ class ReverieServer:
       persona.save(save_folder)
 
 
+  # 启动路径测试服务器，帮助智能体生成空间记忆。
+  # 不断从前端接收测试智能体的位置信息，基于智能体的当前坐标和视野半径更新空间记忆。
+  # 该方法将保存并输出智能体的空间记忆结构，主要用于智能体路径规划和环境感知的测试。
   def start_path_tester_server(self): 
     """
     Starts the path tester server. This is for generating the spatial memory
@@ -275,7 +286,14 @@ class ReverieServer:
 
       time.sleep(self.server_sleep * 10)
 
-
+# 仿真的主要循环，处理每个步骤中的智能体移动和行为。
+  #   流程：
+  # 检查前端是否有新的环境状态（即新的智能体位置）。
+  # 更新智能体的状态和位置。
+  # 让每个智能体感知其环境并决定下一步移动的方向。
+  # 保存智能体的行动和描述（例如当前正在做什么、与谁对话等）。
+  # 时间前进 sec_per_step，步数增加，直到达到预设的步数。
+  
   def start_server(self, int_counter): 
     """
     The main backend server of Reverie. 
@@ -412,6 +430,7 @@ class ReverieServer:
       time.sleep(self.server_sleep)
 
 
+  # 打开交互式命令行界面，允许用户通过命令操作仿真。
   def open_server(self): 
     """
     Open up an interactive terminal prompt that lets you run the simulation 
