@@ -53,6 +53,7 @@ class Persona:
     self.scratch = Scratch(scratch_saved)
 
 
+# 代理的记忆可以存储为文件，包括空间记忆、联想记忆和短期记忆，保证代理在模拟过程中的状态可以被保存和重新加载。
   def save(self, save_folder): 
     """
     Save persona's current state (i.e., memory). 
@@ -83,6 +84,11 @@ class Persona:
     self.scratch.save(f_scratch)
 
 
+# 从代理的当前环境（maze）中感知周围的事件。
+# 感知受两个参数的控制：
+# att_bandwidth: 感知带宽，控制代理一次最多能感知的事件数量。
+# retention: 保留时间，防止代理在短时间内重复感知同样的事件。
+# 输出：返回一个事件列表，这些事件是新的、且对代理而言是重要的。
   def perceive(self, maze):
     """
     This function takes the current maze, and returns events that are 
@@ -111,7 +117,8 @@ class Persona:
     """
     return perceive(self, maze)
 
-
+# 功能：从感知到的事件中检索相关的历史记忆，为后续的计划提供上下文。
+# 输出：返回一个包含当前事件及其相关事件和思考的字典，供代理在计划过程中使用。
   def retrieve(self, perceived):
     """
     This function takes the events that are perceived by the persona as input
@@ -127,7 +134,8 @@ class Persona:
     """
     return retrieve(self, perceived)
 
-
+# 功能：根据检索到的记忆、当前环境（maze）、其他代理（personas）以及是否是“新的一天”，制定短期或长期计划。
+# 输出：生成代理的目标行动计划（act_address）。
   def plan(self, maze, personas, new_day, retrieved):
     """
     Main cognitive function of the chain. It takes the retrieved memory and 
@@ -153,6 +161,8 @@ class Persona:
     return plan(self, maze, personas, new_day, retrieved)
 
 
+# 功能：根据代理的计划，执行具体的行动，如移动到特定位置或使用某个物品。
+# 输出：返回行动的细节，包括代理要去的坐标、描述性文字及符号表情（如行动的emoji描述）。
   def execute(self, maze, personas, plan):
     """
     This function takes the agent's current plan and outputs a concrete 
@@ -174,7 +184,7 @@ class Persona:
     """
     return execute(self, maze, personas, plan)
 
-
+# 功能：回顾代理的记忆，并基于这些记忆生成新的思考。
   def reflect(self):
     """
     Reviews the persona's memory and create new thoughts based on it. 
@@ -187,6 +197,9 @@ class Persona:
     reflect(self)
 
 
+# 功能：这是代理的核心认知序列，结合所有步骤（感知、检索、计划、反思和执行），推动代理在环境中移动并执行行动。
+# 输入：当前的迷宫状态、代理的位置（curr_tile）、时间（curr_time）等。
+# 输出：返回代理的行动细节，类似于execute的输出。
   def move(self, maze, personas, curr_tile, curr_time):
     """
     This is the main cognitive function where our main sequence is called. 
@@ -236,6 +249,7 @@ class Persona:
     return self.execute(maze, personas, plan)
 
 
+# 功能：开启一个新的对话会话，进入对话模式（convo_mode），允许代理与其他代理或玩家进行互动。
   def open_convo_session(self, convo_mode): 
     open_convo_session(self, convo_mode)
     
