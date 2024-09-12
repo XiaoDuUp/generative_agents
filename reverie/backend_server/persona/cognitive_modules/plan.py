@@ -4,6 +4,11 @@ Author: Joon Sung Park (joonspk@stanford.edu)
 File: plan.py
 Description: This defines the "Plan" module for generative agents. 
 """
+
+"""
+该文件是生成代理角色中用于计划和行动决策的核心模块。它通过生成日常计划、分解任务、执行行动以及处理事件反应来管理角色的行为。
+角色的行动和反应都是基于其感知、记忆和当前的状态来决定的，使得角色能够在复杂的环境中表现出智能化的行为。
+"""
 import datetime
 import math
 import random 
@@ -20,6 +25,8 @@ from persona.cognitive_modules.converse import *
 # CHAPTER 2: Generate
 ##############################################################################
 
+
+# 生成角色的起床时间。调用 GPT 模型，根据角色的生活方式、身份特征等生成起床的小时数。
 def generate_wake_up_hour(persona):
   """
   Generates the time when the persona wakes up. This becomes an integral part
@@ -37,7 +44,7 @@ def generate_wake_up_hour(persona):
   if debug: print ("GNS FUNCTION: <generate_wake_up_hour>")
   return int(run_gpt_prompt_wake_up_hour(persona)[0])
 
-
+# 根据起床时间和角色的基本信息，生成当天的总体任务计划，包括每个任务的起始时间和任务描述
 def generate_first_daily_plan(persona, wake_up_hour): 
   """
   Generates the daily plan for the persona. 
@@ -67,7 +74,7 @@ def generate_first_daily_plan(persona, wake_up_hour):
   if debug: print ("GNS FUNCTION: <generate_first_daily_plan>")
   return run_gpt_prompt_daily_plan(persona, wake_up_hour)[0]
 
-
+# 生成角色的每小时计划，将角色的一天按小时划分，并为每个时间段指定任务。
 def generate_hourly_schedule(persona, wake_up_hour): 
   """
   Based on the daily req, creates an hourly schedule -- one hour at a time. 
@@ -137,7 +144,7 @@ def generate_hourly_schedule(persona, wake_up_hour):
 
   return n_m1_hourly_compressed
 
-
+# 将较大的任务（例如“完成晨间例行活动”）分解为多个小任务，并为每个小任务指定时长。
 def generate_task_decomp(persona, task, duration): 
   """
   A few shot decomposition of a task given the task description 
@@ -163,7 +170,7 @@ def generate_task_decomp(persona, task, duration):
   if debug: print ("GNS FUNCTION: <generate_task_decomp>")
   return run_gpt_prompt_task_decomp(persona, task, duration)[0]
 
-
+# 从多个回忆或感知事件中，选择最优先的事件进行处理。这些事件会影响角色的当前行动。
 def generate_action_sector(act_desp, persona, maze): 
   """TODO 
   Given the persona and the task description, choose the action_sector. 
@@ -458,6 +465,9 @@ def revise_identity(persona):
   persona.scratch.daily_plan_req = new_daily_req
 
 
+
+# 每天开始时，生成角色的起床时间、当天的任务大纲以及逐小时的日程安排。
+# 包括长时间的任务分解（例如：把“起床和完成晨间例行活动”分解为多个具体的小任务）。
 def _long_term_planning(persona, new_day): 
   """
   Formulates the persona's daily long-term plan if it is the start of a new 
@@ -518,6 +528,9 @@ def _long_term_planning(persona, new_day):
 
 
 
+
+# 根据当前的时间和已分解的每日计划，决定角色的下一个行动。比如，角色是继续执行之前的任务，还是开始新的任务。
+# 如果一个任务持续时间过长，系统会将其分解为多个子任务（例如，将“睡觉”分解为“上床睡觉”和“进入深度睡眠”）。
 def _determine_action(persona, maze): 
   """
   Creates the next action sequence for the persona. 
@@ -652,6 +665,8 @@ def _determine_action(persona, maze):
                                  act_obj_event)
 
 
+
+# 角色会根据当前与其他角色的关系和事件的重要性决定是否与其他角色进行交谈或其他形式的互动。
 def _choose_retrieved(persona, retrieved): 
   """
   Retrieved elements have multiple core "curr_events". We need to choose one
@@ -696,6 +711,8 @@ def _choose_retrieved(persona, retrieved):
   return None
 
 
+
+# 角色根据当前感知到的事件和检索到的记忆判断是否需要做出反应。可能的反应包括与其他角色交谈、等待任务完成等。
 def _should_react(persona, retrieved, personas): 
   """
   Determines what form of reaction the persona should exihibit given the 
@@ -857,6 +874,8 @@ def _create_react(persona, inserted_act, inserted_act_dur,
                            act_start_time)
 
 
+
+# 如果角色决定与其他角色交谈，系统会生成对话，并记录对话的开始和结束时间。
 def _chat_react(maze, persona, focused_event, reaction_mode, personas):
   # There are two personas -- the persona who is initiating the conversation
   # and the persona who is the target. We get the persona instances here. 
@@ -904,6 +923,8 @@ def _chat_react(maze, persona, focused_event, reaction_mode, personas):
       act_obj_event, act_start_time)
 
 
+
+# 如果角色决定等待某个事件完成，则会记录等待的时间和理由。
 def _wait_react(persona, reaction_mode): 
   p = persona
 
