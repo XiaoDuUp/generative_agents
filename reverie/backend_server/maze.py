@@ -14,7 +14,10 @@ import math
 
 from global_methods import *
 from utils import *
-
+"""
+这段代码定义了一个名为 Maze 的类，表示一个二维网格的迷宫（或游戏地图）。它的目的是模拟一个虚拟世界，
+包含各种不同的块（块可以是障碍物、房间、物体等）。
+"""
 class Maze: 
   def __init__(self, maze_name): 
     # READING IN THE BASIC META INFORMATION ABOUT THE MAP
