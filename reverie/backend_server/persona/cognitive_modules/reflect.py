@@ -4,6 +4,12 @@ Author: Joon Sung Park (joonspk@stanford.edu)
 File: reflect.py
 Description: This defines the "Reflect" module for generative agents. 
 """
+
+"""
+这段代码定义了 "Reflect" 模块，用于生成代理（Generative Agents）进行自我反思的功能。
+反思是角色行为和思考的重要部分，允许角色在经历事件和互动后，通过分析和总结这些经历，生成新的想法和计划
+
+"""
 import sys
 sys.path.append('../../')
 
@@ -18,6 +24,8 @@ from persona.prompt_template.run_gpt_prompt import *
 from persona.prompt_template.gpt_structure import *
 from persona.cognitive_modules.retrieve import *
 
+# 通过角色的记忆检索最近重要的事件，并生成反思焦点（角色最近经历的关键事件，反映出对她产生影响的事物。）。
+# 这些焦点是角色接下来要深度反思的事件或想法。
 def generate_focal_points(persona, n=3): 
   if debug: print ("GNS FUNCTION: <generate_focal_points>")
   
@@ -35,6 +43,9 @@ def generate_focal_points(persona, n=3):
   return run_gpt_prompt_focal_pt(persona, statements, n)[0]
 
 
+# 生成角色对焦点事件的洞察（角色对这些事件的理解和反思，通常帮助角色从情感、逻辑或行动的角度做出进一步决策。
+# 这种洞察可以引导角色在未来的行动中做出调整，例如改变行为策略、增强自信心或寻找新的解决方案。），并检索相关的证据支持这些洞察。
+# 系统会通过 GPT 模型生成这些洞察。
 def generate_insights_and_evidence(persona, nodes, n=5): 
   if debug: print ("GNS FUNCTION: <generate_insights_and_evidence>")
 
@@ -55,6 +66,7 @@ def generate_insights_and_evidence(persona, nodes, n=5):
     return {"this is blank": "node_1"} 
 
 
+# 在生成角色的洞察时，系统会生成描述角色当前行动的三元组（subject, predicate, object），并将其作为事件进行记录。
 def generate_action_event_triple(act_desp, persona): 
   """TODO 
 
@@ -84,6 +96,7 @@ def generate_poig_score(persona, event_type, description):
 
 
 
+# 这两个函数是：当角色经历了对话后，系统会生成角色对该对话的反思想法和备忘录。这是角色对其与其他角色之间对话的总结和对未来行动的计划。
 def generate_planning_thought_on_convo(persona, all_utt):
   if debug: print ("GNS FUNCTION: <generate_planning_thought_on_convo>")
   return run_gpt_prompt_planning_thought_on_convo(persona, all_utt)[0]
@@ -95,7 +108,8 @@ def generate_memo_on_convo(persona, all_utt):
 
 
 
-
+# 当反思被触发时，系统会生成反思的焦点、检索相关的记忆，并生成新的洞察。然后这些洞察会被存储到角色的长期记忆中，
+# 作为未来决策的参考。
 def run_reflect(persona):
   """
   Run the actual reflection. We generate the focal points, retrieve any 
@@ -132,6 +146,7 @@ def run_reflect(persona):
                                 thought_embedding_pair, evidence)
 
 
+# 确定是否需要触发反思。当角色经历了足够多的重要事件或想法后，系统会触发反思流程。
 def reflection_trigger(persona): 
   """
   Given the current persona, determine whether the persona should run a 
@@ -155,6 +170,7 @@ def reflection_trigger(persona):
   return False
 
 
+# 在每次反思后，角色的反思触发器和相关的计数器会被重置，以便角色可以继续积累新的经验，等待下次反思的触发。
 def reset_reflection_counter(persona): 
   """
   We reset the counters used for the reflection trigger. 
@@ -169,6 +185,8 @@ def reset_reflection_counter(persona):
   persona.scratch.importance_ele_n = 0
 
 
+
+# 反思的总控函数。首先检查是否触发反思，若是，则调用反思函数执行反思，并在对话结束时生成总结和计划。
 def reflect(persona):
   """
   The main reflection module for the persona. We first check if the trigger 
