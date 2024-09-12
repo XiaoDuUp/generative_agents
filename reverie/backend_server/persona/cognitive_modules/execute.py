@@ -12,6 +12,13 @@ from global_methods import *
 from path_finder import *
 from utils import *
 
+
+# 这段代码定义了 execute 函数，用于生成代理角色在游戏世界中的行动路径，并执行计划的行为。它依赖于 Persona 类及其短期记忆 (scratch) 来决定行动如何执行。
+# 函数接收一个代理角色的行动计划，并通过路径计算等方式，指导角色如何从当前地点到达目标地点，然后输出下一步行动的具体位置和描述。
+# 关键步骤：
+# 路径计算 (path_finder)：使用 path_finder 函数根据迷宫的障碍和当前角色位置生成最短路径。
+# 随机位置选择：对于一些随机性较大的行动，函数通过随机抽取目标位置来生成不确定的路径。
+# 避免角色重叠：函数尝试避免多个角色占据同一位置，通过检查其他角色的位置来选择不同的目标位置。
 def execute(persona, maze, personas, plan): 
   """
   Given a plan (action's string address), we execute the plan (actually 
