@@ -4,6 +4,11 @@ Author: Joon Sung Park (joonspk@stanford.edu)
 File: gpt_structure.py
 Description: Wrapper functions for calling OpenAI APIs.
 """
+
+"""
+这段代码定义了一个名为 ChatGPT_request 的函数，用于向 OpenAI 的 ChatGPT API 发送请求，
+并返回生成的对话响应。代码的主要功能是封装 API 调用，发送指定的 prompt，并从 OpenAI 的 GPT-3.5 Turbo 模型中获取回复。
+"""
 import json
 import random
 import openai
