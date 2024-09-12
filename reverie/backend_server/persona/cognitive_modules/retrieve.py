@@ -4,6 +4,20 @@ Author: Joon Sung Park (joonspk@stanford.edu)
 File: retrieve.py
 Description: This defines the "Retrieve" module for generative agents. 
 """
+
+"""
+这段代码定义了“Retrieve”（检索）模块，它负责在生成式代理（generative agents）的认知框架中，从记忆中检索相关的事件和思考。
+这一模块的核心功能是从当前感知到的事件中找到相关的背景信息（过去的事件、思考等），为角色制定计划提供必要的上下文。
+
+
+工作流程 ： 
+感知：角色首先感知周围的事件（由感知模块负责）。
+检索相关记忆：检索模块通过调用 retrieve 函数，从角色的记忆中提取与感知事件相关的过去事件和思考。
+排序与筛选：使用最近度、重要性、相关性等计算方法（如余弦相似度），对提取的节点进行评分，并根据评分选出最相关的节点。
+结果输出：返回一个包含焦点事件及其相关信息的字典，帮助角色在制定计划时参考这些上下文信息。
+"""
+
+
 import sys
 sys.path.append('../../')
 
@@ -13,6 +27,8 @@ from persona.prompt_template.gpt_structure import *
 from numpy import dot
 from numpy.linalg import norm
 
+
+# 该函数的作用是从角色的感知中检索相关的事件和思考，返回一个包含当前事件及相关信息的字典。
 def retrieve(persona, perceived): 
   """
   This function takes the events that are perceived by the persona as input
@@ -129,6 +145,8 @@ def top_highest_x_values(d, x):
   return top_v
 
 
+
+# 该函数用于计算节点的“最近度”分数，即根据事件或思考离当前的时间远近，分配一个最近度分数
 def extract_recency(persona, nodes):
   """
   Gets the current Persona object and a list of nodes that are in a 
@@ -152,6 +170,7 @@ def extract_recency(persona, nodes):
   return recency_out
 
 
+# 该函数用于计算节点的“重要性”分数。通常根据节点的情感强度或触发的记忆来计算。
 def extract_importance(persona, nodes):
   """
   Gets the current Persona object and a list of nodes that are in a 
@@ -172,6 +191,7 @@ def extract_importance(persona, nodes):
   return importance_out
 
 
+# 该函数用于计算节点与焦点事件的“相关性”分数。通过计算焦点事件和节点的嵌入向量之间的余弦相似度，得出它们的相关性。
 def extract_relevance(persona, nodes, focal_pt): 
   """
   Gets the current Persona object, a list of nodes that are in a 
@@ -196,6 +216,9 @@ def extract_relevance(persona, nodes, focal_pt):
   return relevance_out
 
 
+
+# 这是核心的检索函数，结合上面的一系列辅助函数来检索与焦点事件或思考相关的节点。
+# 它使用最近度、重要性和相关性三个维度对节点进行打分，并检索出得分最高的节点。
 def new_retrieve(persona, focal_points, n_count=30): 
   """
   Given the current persona and focal points (focal points are events or 
