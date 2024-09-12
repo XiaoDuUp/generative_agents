@@ -22,6 +22,11 @@ def generate_poig_score(persona, event_type, description):
     return run_gpt_prompt_chat_poignancy(persona, 
                            persona.scratch.act_description)[0]
 
+
+# perceive 函数，它是生成代理角色感知周围环境的模块，负责收集角色周围的事件和空间信息，并将这些信息存储到角色的记忆中。
+
+# 函数模拟角色在游戏世界中的感知过程，收集角色在其视野半径内的事件（例如聊天、动作）和空间（如房间、物品），
+# 并根据这些信息更新角色的短期记忆和长期记忆。它还会过滤出新事件，并返回这些新事件的概念节点。
 def perceive(persona, maze): 
   """
   Perceives events around the persona and saves it to the memory, both events 
