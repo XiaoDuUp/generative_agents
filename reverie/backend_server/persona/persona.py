@@ -27,6 +27,8 @@ from persona.cognitive_modules.reflect import *
 from persona.cognitive_modules.execute import *
 from persona.cognitive_modules.converse import *
 
+# 这段代码定义了一个名为Persona的类，它是一个虚拟代理，用于模拟一个具备记忆、认知和行动能力的角色。该类的功能涵盖从感知周围环境、存储和检索记忆、规划和执行行动、反思回顾经历到参与对话的全过程。
+# 它特别适用于虚拟环境中的模拟代理，如Reverie项目中使用的代理角色。
 class Persona: 
   def __init__(self, name, folder_mem_saved=False):
     # PERSONA BASE STATE 
@@ -38,12 +40,15 @@ class Persona:
     # If there is already memory in folder_mem_saved, we load that. Otherwise,
     # we create new memory instances. 
     # <s_mem> is the persona's spatial memory. 
+    # 用于存储代理所处环境的空间布局（类似一个树状结构来描述环境中的不同位置和物品）。
     f_s_mem_saved = f"{folder_mem_saved}/bootstrap_memory/spatial_memory.json"
     self.s_mem = MemoryTree(f_s_mem_saved)
     # <s_mem> is the persona's associative memory. 
+    # 用于存储代理的事件关联信息（例如人物、地点、动作的关联）
     f_a_mem_saved = f"{folder_mem_saved}/bootstrap_memory/associative_memory"
     self.a_mem = AssociativeMemory(f_a_mem_saved)
     # <scratch> is the persona's scratch (short term memory) space. 
+    # 短期记忆，类似工作记忆，保存代理的临时信息，如当前时间和状态。
     scratch_saved = f"{folder_mem_saved}/bootstrap_memory/scratch.json"
     self.scratch = Scratch(scratch_saved)
 
