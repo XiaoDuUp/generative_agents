@@ -17,9 +17,9 @@ sys.path.append('../../')
 from global_methods import *
 from persona.prompt_template.gpt_structure import *
 from persona.prompt_template.print_prompt import *
+# 这些函数通过GPT模型生成不同的对话、计划和角色行为相关的文本输出。
 
 # 生成一个长度为i到j之间的随机字母数字字符串。
-# 这些函数通过GPT模型生成不同的对话、计划和角色行为相关的文本输出。
 def get_random_alphanumeric(i=6, j=6): 
   """
   Returns a random alpha numeric strength that has the length of somewhere
@@ -88,7 +88,7 @@ def run_gpt_prompt_wake_up_hour(persona, test_input=None, verbose=False):
     
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
-# 生成角色的一系列的每日计划，包括起床时间、活动安排等。
+# 生成角色的一系列的每日活动计划描述列表，包括起床时间、活动安排等。
 def run_gpt_prompt_daily_plan(persona, 
                               wake_up_hour, 
                               test_input=None, 
@@ -547,7 +547,10 @@ def run_gpt_prompt_action_sector(action_description,
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+# 根据行动描述生成角色在某个场景中的具体行动地点（arena）。
+# 举例：
+# 输入：行动描述为“角色需要去厨房做早餐”，角色当前在家里的起居室。
+# 输出：GPT生成的结果可能是“kitchen”（厨房），代表角色将在厨房进行活动。
 def run_gpt_prompt_action_arena(action_description, 
                                 persona, 
                                 maze, act_world, act_sector,
@@ -625,7 +628,7 @@ def run_gpt_prompt_action_arena(action_description,
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+# 根据行动描述生成角色与特定游戏对象的互动。
 def run_gpt_prompt_action_game_object(action_description, 
                                       persona, 
                                       maze,
@@ -737,7 +740,7 @@ def run_gpt_prompt_pronunciatio(action_description, persona, verbose=False):
 
 
 
-
+# 生成事件的三元组（如角色、行为和对象），用于描述事件的结构。
 def run_gpt_prompt_event_triple(action_description, persona, verbose=False): 
   def create_prompt_input(action_description, persona): 
     if "(" in action_description: 
@@ -792,7 +795,7 @@ def run_gpt_prompt_event_triple(action_description, persona, verbose=False):
 
 
 
-
+# 生成角色对某个对象的行动描述。
 def run_gpt_prompt_act_obj_desc(act_game_object, act_desp, persona, verbose=False): 
   def create_prompt_input(act_game_object, act_desp, persona): 
     prompt_input = [act_game_object, 
@@ -841,7 +844,7 @@ def run_gpt_prompt_act_obj_desc(act_game_object, act_desp, persona, verbose=Fals
 
 
 
-
+# 生成角色与游戏对象互动的事件三元组。
 def run_gpt_prompt_act_obj_event_triple(act_game_object, act_obj_desc, persona, verbose=False): 
   def create_prompt_input(act_game_object, act_obj_desc): 
     prompt_input = [act_game_object, 
@@ -886,7 +889,7 @@ def run_gpt_prompt_act_obj_event_triple(act_game_object, act_obj_desc, persona, 
 
 
 
-
+# 根据插入的新任务生成新的时间表，并确保时间总和符合要求。
 def run_gpt_prompt_new_decomp_schedule(persona, 
                                        main_act_dur, 
                                        truncated_act_dur, 
@@ -1040,7 +1043,7 @@ def run_gpt_prompt_new_decomp_schedule(persona,
 
 
 
-
+# 根据当前情境和角色信息，决定角色是否与其他角色交谈。
 def run_gpt_prompt_decide_to_talk(persona, target_persona, retrieved,test_input=None, 
                                        verbose=False): 
   def create_prompt_input(init_persona, target_persona, retrieved, 
@@ -1139,7 +1142,7 @@ def run_gpt_prompt_decide_to_talk(persona, target_persona, retrieved,test_input=
 
 
 
-
+# 生成角色对另一角色的行为或事件作出反应的决策。
 def run_gpt_prompt_decide_to_react(persona, target_persona, retrieved,test_input=None, 
                                        verbose=False): 
   def create_prompt_input(init_persona, target_persona, retrieved, 
@@ -1249,7 +1252,11 @@ def run_gpt_prompt_decide_to_react(persona, target_persona, retrieved,test_input
 
 
 
-
+#  生成两个角色之间的完整对话
+# 举例：
+# 输入：角色A和角色B在客厅里见面，角色A刚刚结束了一天的工作，角色B准备做晚餐。
+# 输出： 角色A: "嗨，今天的工作真累啊。"
+#       角色B: "听起来是这样。你要不要喝点东西放松一下？"
 
 def run_gpt_prompt_create_conversation(persona, target_persona, curr_loc,
                                        test_input=None, verbose=False): 
@@ -1386,7 +1393,7 @@ def run_gpt_prompt_create_conversation(persona, target_persona, curr_loc,
 
 
 
-
+# 总结角色之间的对话，生成对话的简要摘要。
 def run_gpt_prompt_summarize_conversation(persona, conversation, test_input=None, verbose=False): 
   def create_prompt_input(conversation, test_input=None): 
     convo_str = ""
@@ -1428,8 +1435,12 @@ def run_gpt_prompt_summarize_conversation(persona, conversation, test_input=None
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
-
+# 从描述中提取关键字，包括情感和事实关键字。
+# 举例：
+# 输入：一段描述：“角色今天感到非常疲惫，因为他工作了一整天，并且遇到了一些挫折。”
+# 输出：
+# 事实关键字：["工作", "挫折"]
+# 情感关键字：["疲惫"]
 def run_gpt_prompt_extract_keywords(persona, description, test_input=None, verbose=False): 
   def create_prompt_input(description, test_input=None): 
     if "\n" in description: 
@@ -1489,7 +1500,10 @@ def run_gpt_prompt_extract_keywords(persona, description, test_input=None, verbo
 
 
 
-
+#  基于关键词生成角色的思想。
+# 举例：
+# 输入：关键字“疲惫”和描述“角色因为长时间工作而感到疲惫。”
+# 输出：GPT生成角色的思想：“我今天真的有点撑不住了，可能需要早点休息。”
 def run_gpt_prompt_keyword_to_thoughts(persona, keyword, concept_summary, test_input=None, verbose=False): 
   def create_prompt_input(persona, keyword, concept_summary, test_input=None): 
     prompt_input = [keyword, concept_summary, persona.name]
@@ -1533,7 +1547,10 @@ def run_gpt_prompt_keyword_to_thoughts(persona, keyword, concept_summary, test_i
 
 
 
-
+# 根据对话内容生成角色的内心想法。
+# 输入：  角色A: "今天发生了好多事，我有点撑不住了。"
+#        角色B: "要不要休息一下？"
+# 输出：  角色A的内心想法可能是：“她总是这么关心我，但我不想让她担心。”
 def run_gpt_prompt_convo_to_thoughts(persona, 
                                     init_persona_name,  
                                     target_persona_name,
@@ -1609,7 +1626,10 @@ def run_gpt_prompt_convo_to_thoughts(persona,
 
 
 
-
+# 生成事件的感人程度评分。
+# 举例：
+# 输入：事件描述“角色A在失去亲人后，一个朋友陪伴他度过了悲伤的时刻。”
+# 输出：GPT可能给出感人程度评分9/10，因为这个事件涉及深厚的情感支持。
 
 def run_gpt_prompt_event_poignancy(persona, event_description, test_input=None, verbose=False): 
   def create_prompt_input(persona, event_description, test_input=None): 
@@ -1650,7 +1670,7 @@ def run_gpt_prompt_event_poignancy(persona, event_description, test_input=None, 
   
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
-
+# 为角色的思想生成感人程度评分。
 def run_gpt_prompt_thought_poignancy(persona, event_description, test_input=None, verbose=False): 
   def create_prompt_input(persona, event_description, test_input=None): 
     prompt_input = [persona.scratch.name,
@@ -1691,7 +1711,7 @@ def run_gpt_prompt_thought_poignancy(persona, event_description, test_input=None
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+# 为角色之间的对话生成感人程度评分。
 def run_gpt_prompt_chat_poignancy(persona, event_description, test_input=None, verbose=False): 
   def create_prompt_input(persona, event_description, test_input=None): 
     prompt_input = [persona.scratch.name,
@@ -1734,7 +1754,7 @@ def run_gpt_prompt_chat_poignancy(persona, event_description, test_input=None, v
 
 
 
-
+# 从陈述中提取焦点信息，生成多个关键点。
 def run_gpt_prompt_focal_pt(persona, statements, n, test_input=None, verbose=False): 
   def create_prompt_input(persona, statements, n, test_input=None): 
     prompt_input = [statements, str(n)]
@@ -1776,7 +1796,7 @@ def run_gpt_prompt_focal_pt(persona, statements, n, test_input=None, verbose=Fal
 
 
 
-
+# 根据陈述生成角色的洞察力和指导信息，解释角色为什么产生这些想法。
 def run_gpt_prompt_insight_and_guidance(persona, statements, n, test_input=None, verbose=False): 
   def create_prompt_input(persona, statements, n, test_input=None): 
     prompt_input = [statements, str(n)]
@@ -1826,7 +1846,7 @@ def run_gpt_prompt_insight_and_guidance(persona, statements, n, test_input=None,
 
 
 
-
+# 总结两个角色的想法。
 
 def run_gpt_prompt_agent_chat_summarize_ideas(persona, target_persona, statements, curr_context, test_input=None, verbose=False): 
   def create_prompt_input(persona, target_persona, statements, curr_context, test_input=None): 
@@ -1866,6 +1886,10 @@ def run_gpt_prompt_agent_chat_summarize_ideas(persona, target_persona, statement
 
 
 
+# 总结两个角色之间的关系。
+# 举例：
+# 输入：对话中角色A对角色B说：“你总是这么理解我。”
+# 输出：总结可能是：“角色A和角色B关系亲密，A感受到B的关心和理解。”
 
 def run_gpt_prompt_agent_chat_summarize_relationship(persona, target_persona, statements, test_input=None, verbose=False): 
   def create_prompt_input(persona, target_persona, statements, test_input=None): 
@@ -1905,7 +1929,7 @@ def run_gpt_prompt_agent_chat_summarize_relationship(persona, target_persona, st
 
 
 
-
+# 生成两个角色之间的对话，基于上下文和各自的想法。
 def run_gpt_prompt_agent_chat(persona, target_persona,
                                curr_context, 
                                init_summ_idea, 
@@ -1985,7 +2009,7 @@ def run_gpt_prompt_agent_chat(persona, target_persona,
 
 
 
-
+# 总结陈述中的主要思想。
 def run_gpt_prompt_summarize_ideas(persona, statements, question, test_input=None, verbose=False): 
   def create_prompt_input(persona, statements, question, test_input=None): 
     prompt_input = [statements, persona.scratch.name, question]
@@ -2022,7 +2046,7 @@ def run_gpt_prompt_summarize_ideas(persona, statements, question, test_input=Non
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+# 生成下一句对话内容。
 def run_gpt_prompt_generate_next_convo_line(persona, interlocutor_desc, prev_convo, retrieved_summary, test_input=None, verbose=False): 
   def create_prompt_input(persona, interlocutor_desc, prev_convo, retrieved_summary, test_input=None): 
     prompt_input = [persona.scratch.name, 
@@ -2068,7 +2092,10 @@ def run_gpt_prompt_generate_next_convo_line(persona, interlocutor_desc, prev_con
 
 
 
-
+# 生成角色对低语（whisper）的内心反应。
+# 举例：
+# 输入：角色A对角色B悄悄说：“我一直都在支持你，不管发生什么。”
+# 输出：角色B的内心想法可能是：“她真的在乎我，我该如何回报这份情感？”
 def run_gpt_prompt_generate_whisper_inner_thought(persona, whisper, test_input=None, verbose=False): 
   def create_prompt_input(persona, whisper, test_input=None): 
     prompt_input = [persona.scratch.name, whisper]
@@ -2105,7 +2132,7 @@ def run_gpt_prompt_generate_whisper_inner_thought(persona, whisper, test_input=N
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+# 生成角色对当前对话的计划和反思。
 def run_gpt_prompt_planning_thought_on_convo(persona, all_utt, test_input=None, verbose=False): 
   def create_prompt_input(persona, all_utt, test_input=None): 
     prompt_input = [all_utt, persona.scratch.name, persona.scratch.name, persona.scratch.name]
@@ -2142,7 +2169,7 @@ def run_gpt_prompt_planning_thought_on_convo(persona, all_utt, test_input=None, 
   return output, [output, prompt, gpt_param, prompt_input, fail_safe]
 
 
-
+# 生成角色对对话的备注或想法。
 def run_gpt_prompt_memo_on_convo(persona, all_utt, test_input=None, verbose=False): 
   def create_prompt_input(persona, all_utt, test_input=None): 
     prompt_input = [all_utt, persona.scratch.name, persona.scratch.name, persona.scratch.name]
