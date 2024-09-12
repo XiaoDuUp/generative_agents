@@ -15,31 +15,42 @@ import datetime
 
 from global_methods import *
 
-
+# 这段代码构建了一个复杂的记忆系统，允许生成式代理存储和管理大量的长期记忆。通过这个系统，
+# 代理可以记住自己在虚拟世界中的经历（事件）、思考（思想）和互动（聊天），并在需要时检索相关的记忆信息。这是生成式代理决策和行动的基础。
+# 是一个封装了记忆的类，每个节点代表一个代理在虚拟世界中的记忆或想法。
 class ConceptNode: 
   def __init__(self,
                node_id, node_count, type_count, node_type, depth,
                created, expiration, 
                s, p, o, 
                description, embedding_key, poignancy, keywords, filling): 
+    # 该节点的唯一标识符。
     self.node_id = node_id
+    # 全局节点计数，代表该节点在系统中的位置。
     self.node_count = node_count
+    # 同一类型节点的计数，比如这是第几个事件、想法或聊天记录。
     self.type_count = type_count
+    # 节点类型，可能是thought（想法）、event（事件）或chat（聊天）。
     self.type = node_type # thought / event / chat
     self.depth = depth
-
+    # 创建时间和过期时间，指明该记忆的时间范围。
     self.created = created
     self.expiration = expiration
     self.last_accessed = self.created
 
+    # 代表记忆节点的三元组，用于表达事件或思想的结构。例如，某人（s）正在做什么（p）与某物（o）。
     self.subject = s
     self.predicate = p
     self.object = o
-
+    # 该节点的文字描述。
     self.description = description
+    # 该节点的嵌入表示，用于与其他记忆节点进行比较或关联。
     self.embedding_key = embedding_key
+    # 表示该记忆的重要性或情感强度。
     self.poignancy = poignancy
+    # 与该记忆相关的关键词。
     self.keywords = keywords
+    # 关联的其他记忆节点。
     self.filling = filling
 
 
@@ -47,14 +58,15 @@ class ConceptNode:
     return (self.subject, self.predicate, self.object)
 
 
+# 这个类管理所有记忆节点，并提供了一些对记忆节点进行操作的功能，如增加事件、想法、聊天，保存和加载记忆，以及检索相关的记忆。
 class AssociativeMemory: 
   def __init__(self, f_saved): 
     self.id_to_node = dict()
-
+    # 三个序列 分别存储事件、想法和聊天记录。
     self.seq_event = []
     self.seq_thought = []
     self.seq_chat = []
-
+    # 字典： 用于快速检索与关键词相关的记忆节点。
     self.kw_to_event = dict()
     self.kw_to_thought = dict()
     self.kw_to_chat = dict()
