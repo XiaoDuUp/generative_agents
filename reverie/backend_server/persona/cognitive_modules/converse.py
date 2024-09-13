@@ -4,6 +4,9 @@ Author: Joon Sung Park (joonspk@stanford.edu)
 File: converse.py
 Description: An extra cognitive module for generating conversations. 
 """
+"""
+主要用于生成代理角色之间的对话。它实现了基于角色记忆和上下文的自然语言对话生成，并使用 GPT 模型来创建总结和对话内容。
+"""
 import math
 import sys
 import datetime
